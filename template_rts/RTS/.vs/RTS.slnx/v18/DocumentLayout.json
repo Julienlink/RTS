@@ -1,0 +1,37 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\julien\\Desktop\\RTS\\template_rts\\RTS\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{F025EDA6-57B4-4F9E-8AF8-14404AFC3D35}|RTS\\RTS.vcxproj|C:\\Users\\julien\\Desktop\\RTS\\template_rts\\RTS\\RTS\\RTS.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{F025EDA6-57B4-4F9E-8AF8-14404AFC3D35}|RTS\\RTS.vcxproj|solutionrelative:RTS\\RTS.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 0,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "RTS.cpp",
+              "DocumentMoniker": "C:\\Users\\julien\\Desktop\\RTS\\template_rts\\RTS\\RTS\\RTS.cpp",
+              "RelativeDocumentMoniker": "RTS\\RTS.cpp",
+              "ToolTip": "C:\\Users\\julien\\Desktop\\RTS\\template_rts\\RTS\\RTS\\RTS.cpp",
+              "RelativeToolTip": "RTS\\RTS.cpp",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAsAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
+              "WhenOpened": "2026-09-14T06:25:52.876Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
