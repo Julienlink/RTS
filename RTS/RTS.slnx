@@ -2,5 +2,5 @@
   <Configurations>
     <Platform Name="x64" />
   </Configurations>
-  <Project Path="RTS/RTS.vcxproj" />
+  <Project Path="RTS/RTS.vcxproj" Id="f025eda6-57b4-4f9e-8af8-14404afc3d35" />
 </Solution>

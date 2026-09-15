@@ -1,10 +1,13 @@
-#include "RTS.h"
-#include <QtWidgets/QApplication>
+#include <QApplication>
+#include <Map.h>
 
 int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
-    RTS window;
-    window.show();
+
+    Map map;
+    map.show();
+    map.start();
+
     return app.exec();
 }
