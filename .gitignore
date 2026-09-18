@@ -52,3 +52,27 @@ compile_commands.json
 *creator.user*
 
 *_qmlcache.qrc
+
+
+
+
+
+
+# Visual Studio
+.vs/
+**/.vs/
+
+# virer les fichier debug de visual
+Debug/
+Release/
+x64/
+x86/
+
+# Virer les fichier temporaire de visual
+*.user
+*.suo
+*.log
+*.db
+*.opendb
+*.VC.db
+*.vsidx
