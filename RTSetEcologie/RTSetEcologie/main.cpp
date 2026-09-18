@@ -1,5 +1,8 @@
 #include <iostream>
 #include <fstream>
+#include <QApplication>
+#include <QTimer>
+#include "grille.h"
 
 double populationSuivante(double P, double a, double b, double dt)
 {
@@ -96,32 +99,56 @@ void simulerLotka(
 
     fichier.close();
 }
+//
+////Le saint main
+//int main()
+//{
+//    double H = 50.0;
+//    double C = 100.0;
+//
+//    double alpha = 0.05;
+//    double beta = 0.001;
+//    double gamma = 0.05;
+//    double delta = 0.001;
+//
+//    double dt = 1.0;
+//
+//    int iterations = 500;
+//
+//    simulerLotka(
+//        H,
+//        C,
+//        alpha,
+//        beta,
+//        gamma,
+//        delta,
+//        dt,
+//        iterations
+//    );
+//
+//    return 0;
+//}
 
-//Le saint main
-int main()
+int main(int argc, char* argv[])
 {
-    double H = 50.0;
-    double C = 100.0;
+    QApplication application(argc, argv);
 
-    double alpha = 0.05;
-    double beta = 0.001;
-    double gamma = 0.05;
-    double delta = 0.001;
+    Grille grille;
+    grille.resize(800, 800);
+    grille.show();
 
-    double dt = 1.0;
+    QTimer timer;
 
-    int iterations = 500;
-
-    simulerLotka(
-        H,
-        C,
-        alpha,
-        beta,
-        gamma,
-        delta,
-        dt,
-        iterations
+    QObject::connect(
+        &timer,
+        &QTimer::timeout,
+        [&grille]()
+        {
+            grille.avancerSimulation();
+        }
     );
 
-    return 0;
+    timer.start(500);
+
+    return application.exec();
 }

@@ -3,5 +3,5 @@
     <Platform Name="x64" />
     <Platform Name="x86" />
   </Configurations>
-  <Project Path="RTSetEcologie/RTSetEcologie.vcxproj" />
+  <Project Path="RTSetEcologie/RTSetEcologie.vcxproj" Id="88b92003-87bb-4ddd-853f-62621b98bfab" />
 </Solution>

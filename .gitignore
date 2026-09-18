@@ -79,3 +79,8 @@ x86/
 
 # Fichiers CSV que je genere
 *.csv
+
+# Fichiers temporaires qt Visual
+*.qtvscr
+
+
