@@ -1,8 +1,8 @@
 #include "proie.h"
 #include <QRandomGenerator>
 
-Proie::Proie(int x, int y)
-    : x(x), y(y), age(0)
+Proie::Proie(int x, int y, int ageInitial)
+    : x(x), y(y), age(ageInitial), tempsAvantReproduction(0)
 {
 }
 
@@ -19,6 +19,29 @@ int Proie::getY() const
 int Proie::getAge() const
 {
     return age;
+}
+
+int Proie::getTempsAvantReproduction() const
+{
+    return tempsAvantReproduction;
+}
+
+bool Proie::peutSeReproduire() const
+{
+    return age >= 30 && tempsAvantReproduction == 0;
+}
+
+void Proie::vientDeSeReproduire()
+{
+    tempsAvantReproduction = 10;
+}
+
+void Proie::reduireTempsReproduction()
+{
+    if (tempsAvantReproduction > 0)
+    {
+        tempsAvantReproduction--;
+    }
 }
 
 void Proie::vieillir(int dt)

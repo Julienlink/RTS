@@ -28,30 +28,45 @@ void Grille::avancerSimulation()
 {
     std::vector<Proie> nouvellesProies;
 
-    double p = 0.05;
-
+    //Deplacement et vieillissement des proies
     for (Proie& proie : proies)
     {
         proie.deplacer(N);
         proie.vieillir(1);
+        proie.reduireTempsReproduction();
+    }
 
-        double hasard = QRandomGenerator::global()->generateDouble();
-
-        if (hasard < p)
+    //Recherche de partenaire entre les differentes proies
+    for (size_t i = 0; i < proies.size(); i++)
+    {
+        for (size_t j = i + 1; j < proies.size(); j++)
         {
-            int x = QRandomGenerator::global()->bounded(N);
-            int y = QRandomGenerator::global()->bounded(N);
+            if (proies[i].getX() == proies[j].getX()
+                && proies[i].getY() == proies[j].getY())
+            {
+                if (proies[i].peutSeReproduire()
+                    && proies[j].peutSeReproduire())
+                {
+                    nouvellesProies.emplace_back(
+                        proies[i].getX(),
+                        proies[i].getY(),
+                        0
+                    );
 
-            nouvellesProies.emplace_back(x, y);
+                    proies[i].vientDeSeReproduire();
+                    proies[j].vientDeSeReproduire();
+                }
+            }
         }
     }
 
+    /*Nouvelles proies*/
     for (const Proie& nouvelleProie : nouvellesProies)
     {
         proies.push_back(nouvelleProie);
     }
 
-    /*vider buffer dans le fichier imediatement = csv mis a jour tout de suite*/
+    /*Vider buffer dans le fichier imediatement = CSV mis a jour tout de suite*/
     fichierPopulation << tempsSimulation
         << ";"
         << proies.size()
@@ -61,8 +76,10 @@ void Grille::avancerSimulation()
 
     tempsSimulation++;
 
+    /*Affichage grille*/
     update();
 }
+
 
 void Grille::paintEvent(QPaintEvent* event)
 {
