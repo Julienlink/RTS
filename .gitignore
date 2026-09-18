@@ -76,3 +76,6 @@ x86/
 *.opendb
 *.VC.db
 *.vsidx
+
+# Fichiers CSV que je genere
+*.csv
