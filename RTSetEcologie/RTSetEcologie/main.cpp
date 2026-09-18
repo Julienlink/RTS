@@ -46,6 +46,56 @@ void populationSuivanteLotka(
     nouveauC = C + dt * (-gamma * C + delta * C * H);
 }
 
+void simulerLotka(
+    double H,
+    double C,
+    double alpha,
+    double beta,
+    double gamma,
+    double delta,
+    double dt,
+    int iterations)
+{
+    std::ofstream fichier("lotka_volterra.csv");
+    fichier << "Temps;Proies;Predateurs\n";
+
+    for (int i = 0; i < iterations; i++)
+    {
+        double temps = i * dt;
+
+        std::cout << "Iteration " << i
+            << " ; H = " << H
+            << " ; C = " << C
+            << std::endl;
+
+        fichier << temps
+            << ";"
+            << H
+            << ";"
+            << C
+            << "\n";
+
+        double nouveauH;
+        double nouveauC;
+
+        populationSuivanteLotka(
+            H,
+            C,
+            alpha,
+            beta,
+            gamma,
+            delta,
+            dt,
+            nouveauH,
+            nouveauC
+        );
+
+        H = nouveauH;
+        C = nouveauC;
+    }
+
+    fichier.close();
+}
 
 //Le saint main
 int main()
@@ -60,10 +110,9 @@ int main()
 
     double dt = 1.0;
 
-    double nouveauH;
-    double nouveauC;
+    int iterations = 500;
 
-    populationSuivanteLotka(
+    simulerLotka(
         H,
         C,
         alpha,
@@ -71,15 +120,8 @@ int main()
         gamma,
         delta,
         dt,
-        nouveauH,
-        nouveauC
+        iterations
     );
-
-    std::cout << "H actuel : " << H << std::endl;
-    std::cout << "C actuel : " << C << std::endl;
-
-    std::cout << "H suivant : " << nouveauH << std::endl;
-    std::cout << "C suivant : " << nouveauC << std::endl;
 
     return 0;
 }
