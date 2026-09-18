@@ -4,6 +4,7 @@
 #include <vector>
 #include <fstream>
 #include "proie.h"
+#include "predateur.h"
 
 class Grille : public QWidget
 {
@@ -20,5 +21,6 @@ private:
     int tempsSimulation = 1;
 
     std::vector<Proie> proies;
+    std::vector<Predateur> predateurs;
     std::ofstream fichierPopulation;
 };

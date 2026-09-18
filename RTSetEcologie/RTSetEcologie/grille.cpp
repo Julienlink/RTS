@@ -19,6 +19,16 @@ Grille::Grille(QWidget* parent)
         proies.emplace_back(x, y);
     }
 
+    int C0 = 20;
+
+    for (int i = 0; i < C0; i++)
+    {
+        int x = QRandomGenerator::global()->bounded(N);
+        int y = QRandomGenerator::global()->bounded(N);
+
+        predateurs.emplace_back(x, y);
+    }
+
     fichierPopulation.open("population_proies.csv");
     fichierPopulation << "Temps;Population\n";
     fichierPopulation << "0;" << proies.size() << "\n";
@@ -28,7 +38,7 @@ void Grille::avancerSimulation()
 {
     std::vector<Proie> nouvellesProies;
 
-    //Deplacement et vieillissement des proies
+    /*Deplacement et vieillissement des proies*/
     for (Proie& proie : proies)
     {
         proie.deplacer(N);
@@ -36,7 +46,30 @@ void Grille::avancerSimulation()
         proie.reduireTempsReproduction();
     }
 
-    //Recherche de partenaire entre les differentes proies
+    /*Deplacement predateurs*/
+    for (Predateur& predateur : predateurs)
+    {
+        predateur.deplacer(N);
+    }
+
+    /*Mort des predateurs*/
+    double probabiliteMort = 0.05;
+
+    for (size_t i = 0; i < predateurs.size(); )
+    {
+        double tirage = QRandomGenerator::global()->generateDouble();
+
+        if (tirage < probabiliteMort)
+        {
+            predateurs.erase(predateurs.begin() + i);
+        }
+        else
+        {
+            i++;
+        }
+    }
+
+    /*Recherche de partenaire entre les differentes proies*/
     for (size_t i = 0; i < proies.size(); i++)
     {
         for (size_t j = i + 1; j < proies.size(); j++)
@@ -120,9 +153,28 @@ void Grille::paintEvent(QPaintEvent* event)
         );
     }
 
+    for (const Predateur& predateur : predateurs)
+    {
+        int x = predateur.getX() * largeurCase;
+        int y = predateur.getY() * hauteurCase;
+
+        painter.drawRect(
+            x + 5,
+            y + 5,
+            largeurCase - 10,
+            hauteurCase - 10
+        );
+    }
+
     painter.drawText(
         10,
         20,
         "Nombre de proies : " + QString::number(proies.size())
+    );
+
+    painter.drawText(
+        10,
+        40,
+        "Nombre de predateurs : " + QString::number(predateurs.size())
     );
 }
