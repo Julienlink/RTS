@@ -1,4 +1,4 @@
-
+﻿
 #include <iostream>
 #include <cmath>
 #include <string>
@@ -39,10 +39,10 @@ int main()
     int temps = 0;
 
     // Population actuelle des lapins
-    double population_lapins = lapins_depart;
+    double population = lapins_depart;
 
     // Population actuelle des renards
-    double population_renards = renards_depart;
+    double renards = renards_depart;
 
     // Etats d'equilibre
     double equilibre_lapins = ranards_taux_mortalite / renards_taux_croissance;
@@ -53,8 +53,8 @@ int main()
     std::cout << "Renards : " << equilibre_renards << "\n\n";
 
     std::cout << "Temps d'observation : " << temps
-        << " population de lapins : " << population_lapins
-        << " population de renards : " << population_renards << "\n\n";
+        << " population de lapins : " << population
+        << " population de renards : " << renards << "\n\n";
 
     std::cin.ignore();
 
@@ -74,35 +74,36 @@ int main()
             // H(t+1) = H(t) + alpha*H(t) - beta*H(t)*C(t)
             // C(t+1) = C(t) - gamma*C(t) + delta*C(t)*H(t)
 
-            double nouv_population_renards =
-                renards_depart +
-                - ranards_taux_mortalite * renards_depart * temps
-                + renards_taux_croissance * population_renards * temps * population_lapins;
+            double nouvelle_population =
+                population
+                + lapins_taux_croissance * population
+                - lapins_taux_mortalite * population * renards;
 
-            double nouv_population_lapins =
-                lapins_depart +
-                lapins_taux_croissance * lapins_depart * temps
-                - lapins_taux_mortalite * lapins_depart * temps * population_renards;
+            double nouveaux_renards =
+                renards
+                - ranards_taux_mortalite * renards
+                + renards_taux_croissance * renards * population;
 
-            population_lapins = nouv_population_lapins;
-            population_renards = nouv_population_renards;
+            // Mise a jour des populations
+            population = nouvelle_population;
+            renards = nouveaux_renards;
 
             // Eviter d'avoir des populations negatives
-            if (population_lapins < 0)
+            if (population < 0)
             {
-                population_lapins = 0;
+                population = 0;
             }
 
-            if (population_renards < 0)
+            if (renards < 0)
             {
-                population_renards = 0;
+                renards = 0;
             }
 
             temps++;
 
             std::cout << "\nTemps d'observation : " << temps
-                << " population de lapins : " << population_lapins
-                << " population de renards : " << population_renards << "\n";
+                << " population de lapins : " << population
+                << " population de renards : " << renards << "\n";
 
             std::cout << "Etats d'equilibre : "
                 << "lapins = " << equilibre_lapins
@@ -124,37 +125,36 @@ int main()
         // Simulation automatique pendant temps_observation
         for (int i = 0; i < temps_observation; i++)
         {
-            double nouveaux_lapins =
-                population_lapins
-                + lapins_taux_croissance * population_lapins
-                - lapins_taux_mortalite * population_lapins * population_renards;
+            double nouvelle_population =
+                population
+                + lapins_taux_croissance * population
+                - lapins_taux_mortalite * population * renards;
 
             double nouveaux_renards =
-                population_renards
-                - ranards_taux_mortalite * population_renards
-                + renards_taux_croissance * population_renards * population_lapins;
-
+                renards
+                - ranards_taux_mortalite * renards
+                + renards_taux_croissance * renards * population;
 
             // Mise a jour des populations
-            population_lapins = nouveaux_lapins;
-            population_renards = nouveaux_renards;
+            population = nouvelle_population;
+            renards = nouveaux_renards;
 
             // Eviter d'avoir des populations negatives
-            if (population_lapins < 0)
+            if (population < 0)
             {
-                population_lapins = 0;
+                population = 0;
             }
 
-            if (population_renards < 0)
+            if (renards < 0)
             {
-                population_renards = 0;
+                renards = 0;
             }
 
             temps++;
 
             std::cout << "Temps d'observation : " << temps
-                << " population de lapins : " << population_lapins
-                << " population de renards : " << population_renards << "\n";
+                << " population de lapins : " << population
+                << " population de renards : " << renards << "\n";
         }
     }
 
