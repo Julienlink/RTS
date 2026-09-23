@@ -57,6 +57,7 @@ int main()
         << " population de renards : " << population_renards << "\n\n";
 
     std::cin.ignore();
+    
 
     if (temps_observation == 0)
     {
@@ -75,14 +76,14 @@ int main()
             // C(t+1) = C(t) - gamma*C(t) + delta*C(t)*H(t)
 
             double nouv_population_renards =
-                renards_depart +
-                - ranards_taux_mortalite * renards_depart * temps
-                + renards_taux_croissance * population_renards * temps * population_lapins;
+                population_renards +
+                -ranards_taux_mortalite * population_renards
+                + renards_taux_croissance * population_renards * population_lapins;
 
             double nouv_population_lapins =
-                lapins_depart +
-                lapins_taux_croissance * lapins_depart * temps
-                - lapins_taux_mortalite * lapins_depart * temps * population_renards;
+                population_lapins +
+                lapins_taux_croissance * population_lapins
+                - lapins_taux_mortalite * population_lapins * population_renards;
 
             population_lapins = nouv_population_lapins;
             population_renards = nouv_population_renards;
@@ -162,7 +163,7 @@ int main()
 }
 
 // Exécuter le projet : Ctrl+F5
-// Démarrer le débogage : F5
+// Démarrer le débogage : F5l
 
 
 // Astuces pour bien démarrer : 
