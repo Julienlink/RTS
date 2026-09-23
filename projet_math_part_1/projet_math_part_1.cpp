@@ -32,6 +32,10 @@ int main()
     double ranards_taux_mortalite;
     std::cin >> ranards_taux_mortalite;
 
+    std::cout << "pas de temps (pas_temporelle)(envirron 0.01) : ";
+    double pas_temporelle;
+    std::cin >> pas_temporelle;
+
     std::cout << "Temps d'observation (0 = manuelle) (val = t) : \n";
     int temps_observation;
     std::cin >> temps_observation;
@@ -75,15 +79,19 @@ int main()
             // H(t+1) = H(t) + alpha*H(t) - beta*H(t)*C(t)
             // C(t+1) = C(t) - gamma*C(t) + delta*C(t)*H(t)
 
-            double nouv_population_renards =
-                population_renards +
-                -ranards_taux_mortalite * population_renards
-                + renards_taux_croissance * population_renards * population_lapins;
-
             double nouv_population_lapins =
-                population_lapins +
-                lapins_taux_croissance * population_lapins
-                - lapins_taux_mortalite * population_lapins * population_renards;
+                population_lapins
+                + pas_temporelle * (
+                    lapins_taux_croissance * population_lapins
+                    - lapins_taux_mortalite * population_lapins * population_renards
+                    );
+
+            double nouv_population_renards =
+                population_renards
+                + pas_temporelle * (
+                    -ranards_taux_mortalite * population_renards
+                    + renards_taux_croissance * population_renards * population_lapins
+                    );
 
             population_lapins = nouv_population_lapins;
             population_renards = nouv_population_renards;
