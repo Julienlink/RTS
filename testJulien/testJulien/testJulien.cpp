@@ -2,42 +2,57 @@
 //
 
 #include <iostream>
+#include<fstream>
+#include<sstream>
 #include<cmath>
 
+double alpha = 0.05;
+double beta = 0.001;
+double gamma = 0.05;
+double delta = 0.001;
 
-float lokta_Euler(float entity_rate, int P0, int n) {
-	return pow(1 + entity_rate, n) * P0;
+double H = 50;
+double C = 100;
+
+double Hactual = H;
+double Cactual = C;
+
+std::ofstream File;
+
+//jour
+double dT = 1;
+
+int it = 500;
+
+void LoktaVolterra(double Hn, double Cn, double dt,double a,double b, double g,double d,int nbIt) {
+	StartSim();
+	Export(0, Hn, Cn);
+	if (!(nbIt > 0)) {
+		std::cout << "Iteration can't be lower then 1,";
+		nbIt = 1;
+	}
+	for (int i = 0;i < nbIt;i++) {
+		Hn = Hn + dt * Hn * (a - b * Cn);
+		Cn = Cn + dt * Cn * (-g + d * Hn);
+		Export(i + 1, Hn, Cn);
+	}
+	Hactual = Hn;
+	Cactual = Cn;
+	EndSim();
 }
 
+void Export(double temps,double Hn,double Cn) {
+	File << temps << "," << Hn << "," << Cn << "\n";
 
-
-int main()
-{
-	float prey = 0.05f;
-	float hunter = -0.1f;
-	int P0 = 2;
-
-	std::cout << "data: proie = 0.05 , predateur= -0.1, P0=1 " << std::endl;
-	float j1 = lokta_Euler(prey, P0, 1);
-	float j5 = lokta_Euler(prey, P0, 5);
-	float j15 = lokta_Euler(prey, P0, 15);
-	float j25 = lokta_Euler(prey, P0, 25);
-	std::cout << "proie j1, j5, j15, j25 :" << j1 << " , " << j5 << " , " << j15  << " , " << j25 << std::endl;
-
-	j1 = lokta_Euler(hunter, P0, 1);
-	j5 = lokta_Euler(hunter, P0, 5);
-	j15 = lokta_Euler(hunter, P0, 15);
-	j25 = lokta_Euler(hunter, P0, 25);
-
-	std::cout << "predateur j1, j5, j15, j25 :" << j1 << " , " << j5 << " , " << j15 << " , " << j25 << std::endl;
-
-	float j14 = lokta_Euler(hunter, P0, 200);
-
-	std::cout << "predateur j14 : " << j14<< std::endl;
+}
+void StartSim() {
+	File.open("PopulationsEvolution.csv");
+	File << "Temps,H,C\n";
 }
 
-
-
+void EndSim() {
+	File.close();
+}
 
 // Exécuter le programme : Ctrl+F5 ou menu Déboguer > Exécuter sans débogage
 // Déboguer le programme : F5 ou menu Déboguer > Démarrer le débogage
