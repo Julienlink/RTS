@@ -80,18 +80,19 @@ int main()
             // C(t+1) = C(t) - gamma*C(t) + delta*C(t)*H(t)
 
             double nouv_population_lapins =
-                population_lapins
-                + pas_temporelle * (
-                    lapins_taux_croissance * population_lapins
-                    - lapins_taux_mortalite * population_lapins * population_renards
-                    );
+                population_lapins * (
+				    lapins_taux_croissance * pas_temporelle 
+                    - lapins_taux_mortalite * population_renards * pas_temporelle 
+                    + 1
+
+				);
 
             double nouv_population_renards =
-                population_renards
-                + pas_temporelle * (
-                    -ranards_taux_mortalite * population_renards
-                    + renards_taux_croissance * population_renards * population_lapins
-                    );
+                population_renards * (
+                    -ranards_taux_mortalite * pas_temporelle
+                    + renards_taux_croissance * population_renards * pas_temporelle
+                    + 1
+                );
 
             population_lapins = nouv_population_lapins;
             population_renards = nouv_population_renards;
