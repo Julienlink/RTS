@@ -1,21 +1,17 @@
 #pragma once
+#include"POI.h"
 
-class Bush {
+class Bush : public virtual POI {
 public:
-	Bush(int x, int y);
+	Bush();
 	double getBerries() { return berries; }
-	double getWeight() { return weight; }
-	int getX() { return PosX; }
-	int getY() { return PosY; }
+	double getWeight() override { return weight; }
 
 	void Grow();
 	void EatBerries(double eatenBerries);
-	void Update();
+	void Update() override;
 
 private:
-	//Bush's position on the map
-	int PosX;
-	int PosY;
 	//time it take to grow a new batch of berries
 	double growthTime = 5;
 	double growth = 0;

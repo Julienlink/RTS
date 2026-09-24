@@ -1,11 +1,13 @@
 #pragma once
-class Water {
+#include"POI.h"
+
+class Water : public POI {
 public:
-	Water(int x, int y);
-	int getX();
-	int getY();
+	Water() = default;
+	double getWeight() override { return weight; }
+
+	//will implement with season and freezing water
+	void Update() override {};
 private:
-	int PosX;
-	int PosY;
 	double weight = 5;
 };

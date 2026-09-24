@@ -76,3 +76,8 @@ void Proie::deplacer(int N)
     y = (y + N) % N;
 }
 
+void Proie::deplacer(int N, std::vector<std::vector<POI>>)
+{
+
+}
+

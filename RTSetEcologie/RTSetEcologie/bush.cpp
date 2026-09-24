@@ -1,10 +1,8 @@
 #include "bush.h"
 #include <QRandomGenerator>
 
-Bush::Bush(int x, int y)
+Bush::Bush()
 {
-	PosX = x;
-	PosY = y;
 	berries = QRandomGenerator::global()->bounded(3);
 }
 
@@ -22,7 +20,7 @@ void Bush::Grow()
 
 void Bush::EatBerries(double eatenBerries)
 {
-	berries - eatenBerries;
+	berries -= eatenBerries;
 	weight = 1 * round(berries / 2);
 }
 

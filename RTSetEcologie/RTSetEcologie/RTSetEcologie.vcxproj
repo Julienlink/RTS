@@ -159,15 +159,19 @@
     </Manifest>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="bush.cpp" />
     <ClCompile Include="grille.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="predateur.cpp" />
     <ClCompile Include="proie.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="bush.h" />
     <ClInclude Include="grille.h" />
+    <ClInclude Include="POI.h" />
     <ClInclude Include="predateur.h" />
     <ClInclude Include="proie.h" />
+    <ClInclude Include="water.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <Import Project="$(QtMsBuild)\qt.targets" Condition="Exists('$(QtMsBuild)\qt.targets')" />

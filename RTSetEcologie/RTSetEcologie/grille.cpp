@@ -6,9 +6,32 @@
 
 #include <QString>
 
+#include"bush.h"
+#include"water.h"
+
 Grille::Grille(QWidget* parent)
     : QWidget(parent)
 {
+    int bush = 10;
+    int water = 15;
+
+    poi.resize(width() / N);
+    for (auto element : poi) {
+        element.resize(height() / N, nullptr);
+    }
+    for (int i = 0; i < bush;i++) {
+        int x = QRandomGenerator::global()->bounded(width()/N);
+        int y = QRandomGenerator::global()->bounded(height()/N);
+
+        poi[x][y] = new Bush();
+    }
+    for (int i = 0; i < water; i++) {
+        int x = QRandomGenerator::global()->bounded(width()/N);
+        int y = QRandomGenerator::global()->bounded(height()/N);
+
+        poi[x][y] = new Water();
+    }
+
     int H0 = 50;
 
     for (int i = 0; i < H0; i++)

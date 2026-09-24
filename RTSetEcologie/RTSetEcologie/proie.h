@@ -1,5 +1,6 @@
 #pragma once
-
+#include "POI.h"
+#include<vector>
 class Proie
 {
 public:
@@ -11,6 +12,7 @@ public:
     int getTempsAvantReproduction() const;
 
     void deplacer(int N);
+    void deplacer(int N, std::vector<std::vector<POI>>);
     void vieillir(int dt);
 
     bool peutSeReproduire() const;
