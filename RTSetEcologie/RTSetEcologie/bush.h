@@ -4,8 +4,9 @@
 class Bush : public virtual POI {
 public:
 	Bush();
+	POIType getType() const override { return POIType::Nourriture; }
 	double getBerries() { return berries; }
-	double getWeight() override { return weight; }
+	double getWeight() const override { return weight; }
 
 	void Grow();
 	void EatBerries(double eatenBerries);

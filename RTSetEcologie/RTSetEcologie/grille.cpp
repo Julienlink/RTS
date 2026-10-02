@@ -5,6 +5,7 @@
 #include <QRandomGenerator>
 
 #include <QString>
+#include <iostream>
 
 #include"bush.h"
 #include"water.h"
@@ -14,20 +15,32 @@ Grille::Grille(QWidget* parent)
 {
     int bush = 10;
     int water = 15;
+    int caves = 10;
 
-    poi.resize(width() / N);
-    for (auto element : poi) {
-        element.resize(height() / N, nullptr);
+    poi.resize(N);
+    for (int i = 0;i < poi.size();i++) {
+        poi[i].resize(N, nullptr);
     }
-    for (int i = 0; i < bush;i++) {
-        int x = QRandomGenerator::global()->bounded(width()/N);
-        int y = QRandomGenerator::global()->bounded(height()/N);
 
+
+    for (int i = 0; i < bush;i++) {
+        int x;
+        int y;
+        do {
+            x = QRandomGenerator::global()->bounded(N);
+            y = QRandomGenerator::global()->bounded(N);
+        } while (poi[x][y] != nullptr);
+  
         poi[x][y] = new Bush();
     }
+
     for (int i = 0; i < water; i++) {
-        int x = QRandomGenerator::global()->bounded(width()/N);
-        int y = QRandomGenerator::global()->bounded(height()/N);
+        int x;
+        int y;
+        do {
+            x = QRandomGenerator::global()->bounded(N);
+            y = QRandomGenerator::global()->bounded(N);
+        } while (poi[x][y] != nullptr);
 
         poi[x][y] = new Water();
     }
@@ -61,10 +74,21 @@ void Grille::avancerSimulation()
 {
     std::vector<Proie> nouvellesProies;
 
+    /*Mise a jour des POI*/
+    for (int i = 0;i < poi.size();i++) {
+        for(int j = 0;j<poi[0].size();j++){
+            if (poi[i][j] != nullptr)poi[i][j]->Update();  
+        }
+    }
+
+    /*Calcule des poids pour mouvement*/
+
+
+
     /*Deplacement et vieillissement des proies*/
     for (Proie& proie : proies)
     {
-        proie.deplacer(N);
+        proie.deplacer(N,poi);
         proie.vieillir(1);
         proie.reduireTempsReproduction();
     }
@@ -74,6 +98,12 @@ void Grille::avancerSimulation()
     {
         predateur.deplacer(N);
     }
+
+    /*Recherche d'action supplémentaire*/
+    
+
+    /*Execution des actions supplémentaire*/
+
 
     /*Mort des predateurs*/
     double probabiliteMort = 0.05;
@@ -146,6 +176,27 @@ void Grille::paintEvent(QPaintEvent* event)
     int largeurCase = width() / N;
     int hauteurCase = height() / N;
 
+    for (int i = 0;i < poi.size();i++) {
+        for (int j = 0;j < poi[0].size();j++) {
+            if (poi[i][j] != nullptr) {
+                switch (poi[i][j]->getId())
+                {
+                case 0:
+                    painter.fillRect(i * largeurCase, j * hauteurCase, largeurCase, hauteurCase, Qt::blue);
+                    break;
+                case 1:
+                    painter.fillRect(i * largeurCase, j * hauteurCase, largeurCase, hauteurCase, Qt::green);
+                    break;
+                case 2:
+                    painter.fillRect(i * largeurCase, j * hauteurCase, largeurCase, hauteurCase, Qt::gray);
+                    break;
+                default:
+                    break;
+                }
+            }
+        }
+    }
+
     for (int i = 0; i <= N; i++)
     {
         painter.drawLine(
@@ -162,6 +213,9 @@ void Grille::paintEvent(QPaintEvent* event)
             i * hauteurCase
         );
     }
+
+    
+
 
     for (const Proie& proie : proies)
     {

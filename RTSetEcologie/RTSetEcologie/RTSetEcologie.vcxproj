@@ -167,6 +167,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="bush.h" />
+    <ClInclude Include="Cave.h" />
     <ClInclude Include="grille.h" />
     <ClInclude Include="POI.h" />
     <ClInclude Include="predateur.h" />
