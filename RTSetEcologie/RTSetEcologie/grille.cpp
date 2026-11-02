@@ -13,7 +13,7 @@
 Grille::Grille(QWidget* parent)
     : QWidget(parent)
 {
-    int bush = 10;
+    int bush = 15;
     int water = 15;
     int caves = 10;
 
@@ -22,6 +22,32 @@ Grille::Grille(QWidget* parent)
         poi[i].resize(N, nullptr);
     }
 
+    // Génération d'une rivière qui traverse la carte d'un bord à l'autre.
+    bool riviereHorizontale =
+        QRandomGenerator::global()->bounded(2) == 0;
+
+    if (riviereHorizontale)
+    {
+        int y = QRandomGenerator::global()->bounded(N);
+
+        for (int x = 0; x < N; ++x)
+        {
+            poi[x][y] = new Water();
+            y += QRandomGenerator::global()->bounded(3) - 1;
+            y = std::max(0, std::min(N - 1, y));
+        }
+    }
+    else
+    {
+        int x = QRandomGenerator::global()->bounded(N);
+
+        for (int y = 0; y < N; ++y)
+        {
+            poi[x][y] = new Water();
+            x += QRandomGenerator::global()->bounded(3) - 1;
+            x = std::max(0, std::min(N - 1, x));
+        }
+    }
 
     for (int i = 0; i < bush;i++) {
         int x;
@@ -96,7 +122,7 @@ void Grille::avancerSimulation()
     /*Deplacement predateurs*/
     for (Predateur& predateur : predateurs)
     {
-        predateur.deplacer(N);
+        predateur.deplacer(N, proies);
     }
 
     /*Recherche d'action supplémentaire*/
@@ -179,15 +205,15 @@ void Grille::paintEvent(QPaintEvent* event)
     for (int i = 0;i < poi.size();i++) {
         for (int j = 0;j < poi[0].size();j++) {
             if (poi[i][j] != nullptr) {
-                switch (poi[i][j]->getId())
+                switch (poi[i][j]->getType())
                 {
-                case 0:
+                case POIType::Eau:
                     painter.fillRect(i * largeurCase, j * hauteurCase, largeurCase, hauteurCase, Qt::blue);
                     break;
-                case 1:
+                case POIType::Nourriture:
                     painter.fillRect(i * largeurCase, j * hauteurCase, largeurCase, hauteurCase, Qt::green);
                     break;
-                case 2:
+                case POIType::Abri:
                     painter.fillRect(i * largeurCase, j * hauteurCase, largeurCase, hauteurCase, Qt::gray);
                     break;
                 default:

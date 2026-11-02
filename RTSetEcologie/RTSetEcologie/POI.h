@@ -1,4 +1,7 @@
 #pragma once
+
+enum class POIType;
+
 class POI {
 public:
 
@@ -10,5 +13,5 @@ public:
 enum class POIType {
 	Eau,
 	Nourriture,
-	Abri	
+	Abri
 };

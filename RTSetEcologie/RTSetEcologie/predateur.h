@@ -1,5 +1,7 @@
 #pragma once
 
+#include "proie.h"
+
 class Predateur
 {
 public:
@@ -9,6 +11,7 @@ public:
     int getY() const;
 
     void deplacer(int N);
+    void deplacer(int N, const std::vector<Proie>& proies);
 
 private:
     int x;

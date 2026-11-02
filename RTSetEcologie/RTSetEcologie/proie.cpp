@@ -91,26 +91,13 @@ void Proie::deplacer(
     double poidsDroite = 1.0;
 
 
-    // ---------------------------------------------------------
-    // POI le plus proche de chaque type
-    // ---------------------------------------------------------
-
-    POI* poiEau = nullptr;
-    POI* poiNourriture = nullptr;
-    POI* poiAbri = nullptr;
-
-    double distanceEau =
-        std::numeric_limits<double>::max();
-
-    double distanceNourriture =
-        std::numeric_limits<double>::max();
-
-    double distanceAbri =
-        std::numeric_limits<double>::max();
+    std::vector<std::pair<POI*, double>> poiEau;
+    std::vector<std::pair<POI*, double>> poiNourriture;
+    std::vector<std::pair<POI*, double>> poiAbri;
 
 
     // ---------------------------------------------------------
-    // Recherche du POI le plus proche pour chaque type
+    // Recherche de tous les POI accessibles pour chaque type
     // ---------------------------------------------------------
 
     for (int i = 0; i < N; ++i)
@@ -144,44 +131,59 @@ void Proie::deplacer(
             if (distance == 0.0)
                 continue;
 
+            // Une proie ne perçoit pas les POI situés à plus de 5 cases.
+            if (distance > 5.0)
+                continue;
 
-            // Garder uniquement le plus proche de chaque type
+
             switch (p->getType())
             {
             case POIType::Eau:
-
-                if (distance < distanceEau)
-                {
-                    distanceEau = distance;
-                    poiEau = p;
-                }
-
+                poiEau.emplace_back(p, distance);
                 break;
-
 
             case POIType::Nourriture:
-
-                if (distance < distanceNourriture)
-                {
-                    distanceNourriture = distance;
-                    poiNourriture = p;
-                }
-
+                poiNourriture.emplace_back(p, distance);
                 break;
 
-
             case POIType::Abri:
-
-                if (distance < distanceAbri)
-                {
-                    distanceAbri = distance;
-                    poiAbri = p;
-                }
-
+                poiAbri.emplace_back(p, distance);
                 break;
             }
         }
     }
+
+    auto choisirPoi = [&](const std::vector<std::pair<POI*, double>>& candidats)
+        -> std::pair<POI*, double>
+        {
+            if (candidats.empty())
+                return { nullptr, 0.0 };
+
+            double total = 0.0;
+            for (const auto& candidat : candidats)
+            {
+                double motivation = std::abs(50.0 - getStat(candidat.first->getType())) / 10.0;
+                total += candidat.first->getWeight() * motivation / candidat.second;
+            }
+
+            if (total <= 0.0)
+                return { nullptr, 0.0 };
+
+            double tirage = QRandomGenerator::global()->generateDouble() * total;
+            for (const auto& candidat : candidats)
+            {
+                double motivation = std::abs(50.0 - getStat(candidat.first->getType())) / 10.0;
+                tirage -= candidat.first->getWeight() * motivation / candidat.second;
+                if (tirage <= 0.0)
+                    return candidat;
+            }
+
+            return candidats.back();
+        };
+
+    const auto cibleEau = choisirPoi(poiEau);
+    const auto cibleNourriture = choisirPoi(poiNourriture);
+    const auto cibleAbri = choisirPoi(poiAbri);
 
 
     // ---------------------------------------------------------
@@ -193,15 +195,6 @@ void Proie::deplacer(
         {
             if (p == nullptr)
                 return;
-
-
-            // -----------------------------------------------------
-            // Statistique associée au type du POI
-            //
-            // Eau         -> soif
-            // Nourriture  -> faim
-            // Abri        -> insécurité
-            // -----------------------------------------------------
 
             double stat = getStat(p->getType());
 
@@ -217,13 +210,11 @@ void Proie::deplacer(
 
             double influence =
                 p->getWeight()
-                * (10.0 - stat / 10.0)
-                / distance;
+                * (50.0 - stat)
+                / (10.0 * distance);
 
 
-            // -----------------------------------------------------
-            // On retrouve la position du POI
-            // -----------------------------------------------------
+            
 
             int px = -1;
             int py = -1;
@@ -249,9 +240,7 @@ void Proie::deplacer(
                 return;
 
 
-            // -----------------------------------------------------
             // Distance X/Y vers le POI
-            // -----------------------------------------------------
 
             int dx = px - x;
             int dy = py - y;
@@ -322,20 +311,38 @@ void Proie::deplacer(
                 // Le POI est principalement à gauche/droite
 
                 if (directionX > 0)
-                    poidsDroite += influence;
-
+                {
+                    if (influence >= 0.0)
+                        poidsDroite += influence;
+                    else
+                        poidsGauche -= influence;
+                }
                 else if (directionX < 0)
-                    poidsGauche += influence;
+                {
+                    if (influence >= 0.0)
+                        poidsGauche += influence;
+                    else
+                        poidsDroite -= influence;
+                }
             }
             else if (distanceY > distanceX)
             {
                 // Le POI est principalement en haut/bas
 
                 if (directionY > 0)
-                    poidsBas += influence;
-
+                {
+                    if (influence >= 0.0)
+                        poidsBas += influence;
+                    else
+                        poidsHaut -= influence;
+                }
                 else if (directionY < 0)
-                    poidsHaut += influence;
+                {
+                    if (influence >= 0.0)
+                        poidsHaut += influence;
+                    else
+                        poidsBas -= influence;
+                }
             }
             else
             {
@@ -347,17 +354,35 @@ void Proie::deplacer(
 
 
                 if (directionX > 0)
-                    poidsDroite += demiInfluence;
-
+                {
+                    if (demiInfluence >= 0.0)
+                        poidsDroite += demiInfluence;
+                    else
+                        poidsGauche -= demiInfluence;
+                }
                 else if (directionX < 0)
-                    poidsGauche += demiInfluence;
+                {
+                    if (demiInfluence >= 0.0)
+                        poidsGauche += demiInfluence;
+                    else
+                        poidsDroite -= demiInfluence;
+                }
 
 
                 if (directionY > 0)
-                    poidsBas += demiInfluence;
-
+                {
+                    if (demiInfluence >= 0.0)
+                        poidsBas += demiInfluence;
+                    else
+                        poidsHaut -= demiInfluence;
+                }
                 else if (directionY < 0)
-                    poidsHaut += demiInfluence;
+                {
+                    if (demiInfluence >= 0.0)
+                        poidsHaut += demiInfluence;
+                    else
+                        poidsBas -= demiInfluence;
+                }
             }
         };
 
@@ -366,9 +391,14 @@ void Proie::deplacer(
     // On applique UNIQUEMENT les 3 POI sélectionnés
     // ---------------------------------------------------------
 
-    appliquerInfluence(poiEau, distanceEau);
-    appliquerInfluence(poiNourriture, distanceNourriture);
-    appliquerInfluence(poiAbri, distanceAbri);
+    appliquerInfluence(cibleEau.first, cibleEau.second);
+    appliquerInfluence(cibleNourriture.first, cibleNourriture.second);
+    appliquerInfluence(cibleAbri.first, cibleAbri.second);
+
+    poidsHaut = std::max(0.01, poidsHaut);
+    poidsBas = std::max(0.01, poidsBas);
+    poidsGauche = std::max(0.01, poidsGauche);
+    poidsDroite = std::max(0.01, poidsDroite);
 
 
     // ---------------------------------------------------------
