@@ -3,10 +3,121 @@
 #include <cmath>
 #include <string>
 
-int main()
-{
-    // initialisation des variables
-    std::cout << "Choix des valeurs : \n";
+int V_func() {
+	std::cout << "Modele de Verhulst.\n";
+
+    std::cout << "Population initiale des proies lapins_depart (lapins) : ";
+    double lapins_depart;
+    std::cin >> lapins_depart;
+
+    std::cout << "Taux de reproduction des proies (lapins_taux_croissance) : ";
+    double lapins_taux_croissance;
+    std::cin >> lapins_taux_croissance;
+
+    std::cout << "Taux de mortalite des proies (lapins_taux_mortalite) : ";
+    double lapins_taux_mortalite;
+    std::cin >> lapins_taux_mortalite;
+
+    std::cout << "pas de temps (pas_temporelle)(envirron 0.01) : ";
+    double pas_temporelle;
+    std::cin >> pas_temporelle;
+
+    std::cout << "Temps d'observation (0 = manuelle) (val = t) : \n";
+    int temps_observation;
+    std::cin >> temps_observation;
+
+    int temps = 0;
+
+    double equilibre_lapins = lapins_taux_croissance / lapins_taux_mortalite;
+
+    std::cout << "\nEtat d'equilibre :\n";
+    std::cout << "Lapins : " << equilibre_lapins << "\n";
+
+    std::cout << "Temps d'observation : " << temps
+        << " population de lapins : " << lapins_depart << "\n\n";
+
+    std::cin.ignore();
+
+
+    if (temps_observation == 0)
+    {
+        bool flag = true;
+
+        while (flag)
+        {
+            // Equation de Verhulst :
+            // 
+			// Pn+1 = Pn + a*Pn - b*Pn^2
+            //
+            //la méthode suivante comprends celle de Verhulst mais avec un pas de temps en utilisant la méthode d'Euler.
+
+
+            double nouv_population_lapins =
+                lapins_depart
+                + lapins_depart * lapins_taux_croissance * pas_temporelle
+                - lapins_depart * lapins_depart * lapins_taux_mortalite * pas_temporelle;
+
+            // Mise a jour de la populations
+            lapins_depart = nouv_population_lapins;
+
+            // Eviter d'avoir une populations negatives
+            if (lapins_depart < 0)
+            {
+                lapins_depart = 0;
+            }
+
+            temps++;
+
+            std::cout << "\nTemps d'observation : " << temps
+                << " population de lapins : " << lapins_depart << "\n";
+
+            std::cout << "Etat d'equilibre : "
+                << "lapins = " << equilibre_lapins << "\n";
+
+            std::cout << "Appuyez sur Entree pour continuer ou entrez 0 pour arreter : \n";
+
+            std::string choix;
+            std::getline(std::cin, choix);
+
+            if (choix == "0")
+            {
+                flag = false;
+            }
+        }
+    }
+    else
+    {
+        // Simulation automatique pendant temps_observation
+        for (int i = 1; i < temps_observation; i++)
+        {
+            double nouv_population_lapins =
+                lapins_depart
+                + lapins_depart * lapins_taux_croissance * pas_temporelle
+                - lapins_depart * lapins_depart * lapins_taux_mortalite * pas_temporelle;
+
+
+            // Mise a jour des populations
+            lapins_depart = nouv_population_lapins;
+
+            // Eviter d'avoir des populations negatives
+            if (lapins_depart < 0)
+            {
+                lapins_depart = 0;
+            }
+
+            temps++;
+
+            std::cout << "Temps d'observation : " << temps
+                << " population de lapins : " << lapins_depart << "\n";
+        }
+    }
+
+
+	return 0;
+}
+
+int L_func() {
+    std::cout << "Modele de Lotka Volterra.\n";
 
     std::cout << "Population initiale des proies lapins_depart (lapins) : ";
     double lapins_depart;
@@ -61,7 +172,7 @@ int main()
         << " population de renards : " << population_renards << "\n\n";
 
     std::cin.ignore();
-    
+
 
     if (temps_observation == 0)
     {
@@ -78,21 +189,24 @@ int main()
             //
             // H(t+1) = H(t) + alpha*H(t) - beta*H(t)*C(t)
             // C(t+1) = C(t) - gamma*C(t) + delta*C(t)*H(t)
+            //
+            //la méthode suivante comprends celle de lotka-volterra mais avec un pas de temps en utilisant la méthode d'Euler.
+
 
             double nouv_population_lapins =
                 population_lapins * (
-				    lapins_taux_croissance * pas_temporelle 
-                    - lapins_taux_mortalite * population_renards * pas_temporelle 
+                    lapins_taux_croissance * pas_temporelle
+                    - lapins_taux_mortalite * population_renards * pas_temporelle
                     + 1
 
-				);
+                    );
 
             double nouv_population_renards =
                 population_renards * (
                     -ranards_taux_mortalite * pas_temporelle
-                    + renards_taux_croissance * population_renards * pas_temporelle
+                    + renards_taux_croissance * population_lapins * pas_temporelle
                     + 1
-                );
+                    );
 
             population_lapins = nouv_population_lapins;
             population_renards = nouv_population_renards;
@@ -167,6 +281,36 @@ int main()
                 << " population de renards : " << population_renards << "\n";
         }
     }
+
+    return 0;
+}
+
+int main()
+{
+
+	std::cout << "choix du projet (Le modèle de Verhulst = V ou Lotka-Volterra = L) : \n";
+    // initialisation des variables
+	
+    char modele;
+    std::cin >> modele;
+
+    switch (modele)
+    {
+    case 'L':
+        L_func();
+        break;
+
+    case 'V':
+        V_func();
+        break;
+
+    default:
+        std::cout << "Modele inconnu.\n";
+        break;
+    }
+
+    
+
 
     return 0;
 }
